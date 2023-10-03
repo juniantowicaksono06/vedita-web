@@ -1,0 +1,84 @@
+html, body, body > #__nuxt, body > #__nuxt > #__layout, body > #__nuxt > #__layout .container {
+    height: 100%;
+    /* width: 100%; */
+    /* max-width: 100%; */
+    max-height: 100%;
+}
+
+.fade-in-div {
+    opacity: 0;           /* Initially invisible */
+    transition: opacity 1s ease-in-out; /* Animation duration and easing */
+}
+
+.fade-in-div.show {
+    opacity: 1;           /* Visible when the "show" class is applied */
+}
+
+.box-rounded {
+    border-top-left-radius: 25px !important;
+    border-top-right-radius: 25px !important;
+}
+.mic-icon {
+    max-width: 30% !important;
+}
+.mic-icon:hover {
+    cursor: pointer;
+}
+
+.selection_box {
+    height: 20vh;
+}
+
+.my-align-vertically-center {
+    align-items: center;
+}
+
+.selection_box_text {
+    font-size: 1.8em;
+    margin-bottom: 0;
+}
+
+@media only screen and (min-width: 768px) {
+    .mic-icon {
+        max-width: 25% !important;
+    }
+}
+
+@media only screen and (max-width: 767px) {
+    .my-align-vertically-center {
+        align-items: normal;
+    }
+    .selection_box_text {
+        font-size: 1.1em;
+    }
+    body {
+        height: auto;
+    }
+}
+
+.media-button {
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 5px;
+    z-index: 9999999;
+}
+.media-button button {
+    border-radius: 100%;
+    height: 100px;
+    width: 100px;
+}
+.media-button button span > i {
+    font-size: 40px;
+}
+.btn-disabled {
+    background-color: rgb(80, 78, 78)
+}
+.btn-disabled > span > i {
+    color: #ececec;
+    cursor: default !important;
+}
+
+.btn-disabled:hover {
+    cursor: default !important;
+}
