@@ -7,7 +7,8 @@ export default {
         credentials: false
     },
     env: {
-        VEDITA_API_URL: process.env.VEDITA_API_URL
+        VEDITA_API_URL: process.env.VEDITA_API_URL,
+        ACCESS_TOKEN: process.env.ACCESS_TOKEN
     },
     head: {
         title: 'Vedita - LiVe Digital Assistance',
@@ -36,7 +37,7 @@ export default {
         '@/static/css/global.css',
     ],
     plugins: [
-        '~/plugins/axios',
+        '~/plugins/axios'
     ],
     components: true,
     buildModules: [
@@ -56,6 +57,26 @@ export default {
     build: {
         babel: {
           compact: true
+        }
+    },
+    pwa: {
+        manifest: {
+            name: 'Vedita PWA',
+            short_name: 'VeditaPWA',
+            description: 'Vedita CS Mode', 
+            start_url: '/',
+            display: "standalone",
+            background_color: "#ffffff",
+            theme_color: "#2196F3",
+            lang: 'en',
+            orientation: 'portrait',
+            icons: [
+                {
+                    src: '/icon.png',
+                    sizes: '512x131',
+                    type: 'image/png'
+                }
+            ]
         }
     }
 }

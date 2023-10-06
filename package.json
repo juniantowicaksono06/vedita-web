@@ -34,5 +34,8 @@
     "vue2-datepicker": "^3.11.0",
     "vuedraggable": "^2.24.3",
     "webpack": "^4.46.0"
+  },
+  "devDependencies": {
+    "@nuxtjs/pwa": "^3.3.5"
   }
 }
