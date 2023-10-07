@@ -3,12 +3,12 @@
         <div class="loading" :class="{'d-none': LOADING == false}">
             <ClipLoader color="red" size="50px" />
         </div>
-        <b-modal class="modal-item" v-model="IS_MODAL_OPEN" @show="modalOpen" @hide="closeModal" hide-footer size="lg" hide-header>
+        <b-modal class="modal-item" centered v-model="IS_MODAL_OPEN" @show="modalOpen" @hide="closeModal" hide-footer size="lg" hide-header>
             <div class="container-fluid" v-on:click="closeModal"></div>
             <div class="d-block">
                 <div class="container-fluid">
                     <div class="w-100 justify-content-center d-flex">
-                        <img :src="MODAL_IMG" alt="faq image" class="img-fluid" />
+                        <img :src="MODAL_IMG" alt="faq image" class="img-fluid" :class="{'d-none': (MODAL_IMG == '' || MODAL_IMG == null)}" />
                     </div>
                 </div>
             </div>
@@ -17,9 +17,9 @@
                     <div class="col-12" v-html="MODAL_TEXT"></div>
                 </div>
             </div>
-            <b-button class="mt-3 btn-danger selection_box" block @click="closeModal">Tutup</b-button>
+            <!-- <b-button class="mt-3 btn-danger selection_box" block @click="closeModal">Tutup</b-button> -->
         </b-modal>
-        <b-modal class="modal-item" v-model="IS_MODAL_RECORD_OPEN" @hide="closeRecordModal" hide-footer size="lg" hide-header>
+        <b-modal class="modal-item" centered v-model="IS_MODAL_RECORD_OPEN" @hide="closeRecordModal" hide-footer size="lg" hide-header>
             <div class="container-fluid" v-on:click="closeRecordModal"></div>
             <div class="d-flex justify-content-center">
                 <img :src=mic_img alt="" class="mic-icon" v-on:click="onMicClick()">
@@ -29,9 +29,14 @@
             </div>
             <b-button class="mt-3 btn-danger" block @click="closeRecordModal">Tutup</b-button>
         </b-modal>
-        <div class="media-button" :class="{'d-none': !IS_PLAYING}" id="mediaButton">
+        <div class="media-button" :class="{'d-none': !IS_PLAYING || VEDITA_STATUS == constant.VEDITA_STATUS_SUB_CATEGORY}" id="mediaButton">
             <button class="btn btn-lg" :class="{'btn-disabled': !IS_PLAYING, 'btn-danger': IS_PLAYING}" v-on:click="stopAudio()">
                 <span><i class="fas fa-stop fa-2xl"></i></span>
+            </button>
+        </div>
+        <div class="media-button" :class="{'d-none': (VEDITA_STATUS != constant.VEDITA_STATUS_SUB_CATEGORY || !IS_PLAYING)}" id="mediaButton2">
+            <button class="btn no-rounded btn-lg" :class="{'btn-disabled': !IS_PLAYING, 'btn-danger': IS_PLAYING}" v-on:click="closeModal()">
+                Tutup
             </button>
         </div>
         <audio id="audioPlayer" class="d-none"></audio>
@@ -55,30 +60,6 @@
                             </div>
                         </div>
                     </div>
-                    <!-- <div class="row mb-3">
-                        <div class="col-md-6 fade-in-div col-sm-12 col-12 mb-3">
-                            <div class="selection_box btn btn-danger text-center btn-block d-flex align-items-center justify-content-center" v-on:click="infoSpeech(0, 'Informasi Terkait Syarat Ganti Kartu')">
-                                <p class="selection_box_text">Informasi Terkait Syarat Ganti Kartu</p>
-                            </div>
-                        </div>
-                        <div class="col-md-6 fade-in-div col-sm-12 col-12">
-                            <div class="selection_box btn btn-danger text-center btn-block d-flex align-items-center justify-content-center" v-on:click="infoSpeech(2, 'Informasi Terkait Cara Mengaktifkan Paket Roaming')">
-                                <p class="selection_box_text">Informasi Terkait Cara Mengaktifkan Paket Roaming</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-md-6 fade-in-div col-sm-12 col-12 mb-3">
-                            <div class="selection_box btn btn-danger text-center btn-block d-flex align-items-center justify-content-center" v-on:click="infoSpeech(1, 'Informasi Syarat & Ketentuan Ganti Paket IndiHome')">
-                                <p class="selection_box_text">Syarat & Ketentuan Ganti Paket IndiHome</p>
-                            </div>
-                        </div>
-                        <div class="col-md-6 fade-in-div col-sm-12 col-12">
-                            <div class="selection_box btn btn-danger text-center btn-block d-flex align-items-center justify-content-center" v-on:click="infoSpeech(3, 'Informasi Terkait Paket Unggulan IndiHome')">
-                                <p class="selection_box_text">Paket Unggulan IndiHome, Seperti Telkomsel Dynamic, Telkomsel Jitu Paket Paket Telkomsel One</p>
-                            </div>
-                        </div>
-                    </div> -->
                     <div class="row">
                         <div class="col-12 fade-in-div category">
                             <div class="selection_box btn btn-danger text-center btn-block d-flex align-items-center justify-content-center" v-on:click="showRecordModal()">
@@ -130,7 +111,7 @@
                 MODAL_TEXT: '',
                 IS_MODAL_RECORD_OPEN: false,
                 mic_img: '/img/mic-blue.png',
-                text_info: 'Silahkan klik icon untuk mulai merekam',
+                text_info: 'Klik tombol untuk mulai berbicara',
                 LANGUAGE: constant.VEDITA_LANGUAGE_ID,
                 AUDIO_CONTEXT: null,
                 RECORD: null,
@@ -163,7 +144,6 @@
         methods: {
             modalOpen() {
                 setTimeout(() => {
-                    // console.log(document.querySelector('.modal-lg'))
                     let modal_height = document.querySelector('.modal-lg').offsetHeight
                     if(modal_height > 800) {
                         modal_height += 200
@@ -175,7 +155,7 @@
                 this.VEDITA_STATUS = this.constant.VEDITA_STATUS_CATEGORY
             },
             listSubCategory(id_category = null) {
-                if(id_category == null || id_category == false || id_category == "") {
+                if(id_category == null || id_category == false || id_category == "" || this.IS_PLAYING) {
                     return
                 }
                 this.showLoading()
@@ -210,6 +190,11 @@
                 for (let div = 0; div < all_class.length; div++) {
                     all_class[div].classList.remove('show')
                 }
+            },
+            loadAndPlayAudio(objectURL) {
+                document.querySelector("#audioPlayer").src = objectURL
+                document.querySelector("#audioPlayer").play()
+                this.IS_PLAYING = true
             },
             afterRecord(audio_blob) {
                 this.showLoading()
@@ -264,7 +249,8 @@
                         formData.append('language', this.LANGUAGE)
                         this.$axios.$post('vedita-tts', formData, {
                             headers: {
-                                'Content-Type': 'multipart/form-data'
+                                'Content-Type': 'multipart/form-data',
+                                'x-api-key': process.env.ACCESS_TOKEN
                             }
                         }).then((response) => {
                             const {data} = response
@@ -279,17 +265,16 @@
 
                                 const blob = new Blob([arrayBuffer], {type: 'audio/wav'})
                                 const objectURL = URL.createObjectURL(blob)
-                                document.querySelector("#audioPlayer").src = objectURL
-                                document.querySelector("#audioPlayer").play()
+                                this.loadAndPlayAudio(objectURL)
                                 
-                                this.VEDITA_STATUS = constant.VEDITA_STATUS_TRIGGER
+                                // this.VEDITA_STATUS = constant.VEDITA_STATUS_CATEGORY
                                 
-                                this.IDLE_INTERVAL = setInterval(this.setIdle, this.INTERVAL_TIME)
+                                // this.IDLE_INTERVAL = setInterval(this.setIdle, this.INTERVAL_TIME)
                                 this.IS_PLAYING = true
                             }
                         }).catch((error) => {
                             this.hideLoading()
-                            this.IDLE_INTERVAL = setInterval(this.setIdle, this.INTERVAL_TIME)
+                            // this.IDLE_INTERVAL = setInterval(this.setIdle, this.INTERVAL_TIME)
                         })
                     })
                     .catch(error => {
@@ -297,22 +282,6 @@
                         this.hideLoading()
                         console.error('Fetch error:', error);
                     });
-                    
-                    // if("audio_b64" in data) {
-                    //     const {audio_b64} = data
-                    //     const binaryAudioData = atob(audio_b64)
-                    //     const arrayBuffer = new ArrayBuffer(binaryAudioData.length)
-                    //     const view = new Uint8Array(arrayBuffer)
-                    //     for (let i = 0; i < binaryAudioData.length; i++) {
-                    //         view[i] = binaryAudioData.charCodeAt(i)   
-                    //     }
-
-                    //     const blob = new Blob([arrayBuffer], {type: 'audio/wav'})
-                    //     const objectURL = URL.createObjectURL(blob)
-                    //     document.querySelector("#audioPlayer").src = objectURL
-                    //     document.querySelector("#audioPlayer").play()
-                    //     this.IS_PLAYING = true;
-                    // }
                 })
                 .catch((error) => {
                     alert(error)
@@ -320,6 +289,9 @@
                 })
             },
             onMicClick() {
+                if(this.IS_PLAYING) {
+                    return
+                }
                 if(this.IS_RECORDING == 0) {
                     this.startRecording()
                 }
@@ -327,7 +299,7 @@
                     let callback = this.afterRecord
                     this.stopRecording(callback)
                     this.mic_img = "/img/mic-blue.png"
-                    this.text_info = "Silahkan klik icon untuk mulai merekam"
+                    this.text_info = "Klik tombol untuk mulai berbicara"
                     console.log("STOP RECORDING!")
                 }
             },
@@ -386,17 +358,24 @@
                 this.IS_MODAL_OPEN = true;
             },
             showRecordModal() {
+                if(this.IS_PLAYING) {
+                    return
+                }
                 this.IS_MODAL_RECORD_OPEN = true;
             },
             closeModal() {
                 this.IS_MODAL_OPEN = false;
+                this.stopAudio()
             },
             closeRecordModal() {
                 this.IS_MODAL_RECORD_OPEN = false;
             },
             infoSpeech(id_sub_category) {
+                if(this.IS_PLAYING) {
+                    return
+                }
                 this.showLoading()
-                clearInterval(this.IDLE_INTERVAL)
+                // clearInterval(this.IDLE_INTERVAL)
                 this.$axios.$get(`vedita-cs-get-sub-category?id_sub_category=${id_sub_category}&audio_response=true&language=ID`, {
                     headers: {
                         'x-api-key': process.env.ACCESS_TOKEN
@@ -407,6 +386,7 @@
                         this.MODAL_TEXT = data['html_text'].toString()
                         this.hideLoading()
                         this.showModal()
+                        this.MODAL_IMG = ""
                         if("b64_faq_img" in data) {
                             const {b64_faq_img} = data
                             const binaryImgData = atob(b64_faq_img)
@@ -430,57 +410,22 @@
 
                             const blob = new Blob([arrayBuffer], {type: 'audio/wav'})
                             const objectURL = URL.createObjectURL(blob)
-                            document.querySelector("#audioPlayer").src = objectURL
-                            document.querySelector("#audioPlayer").play()
+                            this.loadAndPlayAudio(objectURL)
                             
-                            // this.VEDITA_STATUS = constant.VEDITA_
-                            
-                            this.IDLE_INTERVAL = setInterval(this.setIdle, this.INTERVAL_TIME)
+                            // this.IDLE_INTERVAL = setInterval(this.setIdle, this.INTERVAL_TIME)
                             this.IS_PLAYING = true
                         }
                     }
                 }).catch((error) => {
                     alert(error)
                     this.hideLoading()
-                    this.IDLE_INTERVAL = setInterval(this.setIdle, this.INTERVAL_TIME)
+                    // this.IDLE_INTERVAL = setInterval(this.setIdle, this.INTERVAL_TIME)
                 })
-                // formData.append('text', this.TTS_TEXT[index])
-                // this.$axios.$post('vedita-tts', formData, {
-                //     headers: {
-                //         'Content-Type': 'multipart/form-data'
-                //     }
-                // }).then((response) => {
-                //     this.MODAL_TITLE = modal_title
-                //     this.MODAL_TEXT = tts_text.original_text[index]
-                //     this.showModal()
-                //     const {data} = response
-                //     if("audio_b64" in data) {
-                //         const {audio_b64} = data
-                //         const binaryAudioData = atob(audio_b64)
-                //         const arrayBuffer = new ArrayBuffer(binaryAudioData.length)
-                //         const view = new Uint8Array(arrayBuffer)
-                //         for (let i = 0; i < binaryAudioData.length; i++) {
-                //             view[i] = binaryAudioData.charCodeAt(i)   
-                //         }
-
-                //         const blob = new Blob([arrayBuffer], {type: 'audio/wav'})
-                //         const objectURL = URL.createObjectURL(blob)
-                //         document.querySelector("#audioPlayer").src = objectURL
-                //         document.querySelector("#audioPlayer").play()
-                        
-                //         this.VEDITA_STATUS = constant.VEDITA_STATUS_TRIGGER
-                        
-                //         this.IDLE_INTERVAL = setInterval(this.setIdle, this.INTERVAL_TIME)
-                //         this.IS_PLAYING = true
-                //     }
-                // }).catch((error) => {
-                //     this.IDLE_INTERVAL = setInterval(this.setIdle, this.INTERVAL_TIME)
-                // })
             },
             async startRecording() {
                 this.STREAM = await navigator.mediaDevices.getUserMedia({audio: true, video: false})
                 this.mic_img = "/img/mic-green.png"
-                this.text_info = "Silahkan berbicara"
+                this.text_info = "Klik tombol untuk selesai bicara"
                 this.AUDIO_CONTEXT = new AudioContext();
                 let input = this.AUDIO_CONTEXT.createMediaStreamSource(this.STREAM);
                 this.RECORD = new Recorder(input,{numChannels:1})
@@ -519,18 +464,17 @@
 
                         const blob = new Blob([arrayBuffer], {type: 'audio/wav'})
                         const objectURL = URL.createObjectURL(blob)
-                        document.querySelector("#audioPlayer").src = objectURL
-                        document.querySelector("#audioPlayer").play()
+                        this.loadAndPlayAudio(objectURL)
                         
                         this.VEDITA_STATUS = constant.VEDITA_STATUS_CATEGORY
                         
-                        this.IDLE_INTERVAL = setInterval(this.setIdle, this.INTERVAL_TIME)
+                        // this.IDLE_INTERVAL = setInterval(this.setIdle, this.INTERVAL_TIME)
                         this.IS_PLAYING = true
                     }
                 }).catch((error) => {
                     alert(error)
                     this.hideLoading()
-                    this.IDLE_INTERVAL = setInterval(this.setIdle, this.INTERVAL_TIME)
+                    // this.IDLE_INTERVAL = setInterval(this.setIdle, this.INTERVAL_TIME)
                 })
             }
         },
