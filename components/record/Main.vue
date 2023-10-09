@@ -61,6 +61,13 @@
                         </div>
                     </div>
                     <div class="row">
+                        <div class="col-12 fade-in-div category mb-3">
+                            <a href="https://grapari.telkomsel.com/goshow/registration?grapari_id=32MSB1SH" class="link-no-color selection_box btn btn-danger text-center btn-block d-flex align-items-center justify-content-center">
+                                <p class="selection_box_text">Ambil Nomor Antrian</p>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="row">
                         <div class="col-12 fade-in-div category">
                             <div class="selection_box btn btn-danger text-center btn-block d-flex align-items-center justify-content-center" v-on:click="showRecordModal()">
                                 <p class="selection_box_text">Pertanyaan Umum Lainnya</p>

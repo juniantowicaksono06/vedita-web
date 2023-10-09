@@ -41,7 +41,8 @@ export default {
     ],
     components: true,
     buildModules: [
-        // '@nuxtjs/fontawesome'
+        // '@nuxtjs/fontawesome',
+        '@nuxtjs/pwa',
     ],
     fontawesome: {
         icons: {
@@ -61,7 +62,7 @@ export default {
     },
     pwa: {
         manifest: {
-            name: 'Vedita PWA',
+            name: 'Vedita CS Mode',
             short_name: 'VeditaPWA',
             description: 'Vedita CS Mode', 
             start_url: '/',
