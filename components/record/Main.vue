@@ -39,6 +39,11 @@
                 Tutup
             </button>
         </div>
+        <div class="media-button" :class="{'d-none': (!(VEDITA_STATUS == constant.VEDITA_STATUS_SUB_CATEGORY || VEDITA_STATUS == constant.VEDITA_STATUS_CATEGORY) || IS_PLAYING)}" id="mediaButton3">
+            <button class="btn no-rounded btn-lg" :class="{'btn-danger': !IS_PLAYING}" v-on:click="returnHome()">
+                <span><i class="fas fa-home fa-2xl"></i></span>
+            </button>
+        </div>
         <audio id="audioPlayer" class="d-none"></audio>
         <div class="d-flex justify-content-center h-100" :class="{'align-items-center': (VEDITA_STATUS == constant.VEDITA_STATUS_IDLE)}">
             <div class="card box-rounded">
@@ -62,7 +67,7 @@
                     </div>
                     <div class="row">
                         <div class="col-12 fade-in-div category mb-3">
-                            <a href="https://grapari.telkomsel.com/goshow/registration?grapari_id=32MSB1SH" class="link-no-color selection_box btn btn-danger text-center btn-block d-flex align-items-center justify-content-center">
+                            <a href="https://grapari.telkomsel.co.id/goshow/registration?grapari_id=32MSB1SH" class="link-no-color selection_box btn btn-danger text-center btn-block d-flex align-items-center justify-content-center">
                                 <p class="selection_box_text">Ambil Nomor Antrian</p>
                             </a>
                         </div>
@@ -140,6 +145,7 @@
                     document.querySelector('body').classList.remove('height-auto')
                 }
                 setTimeout(() => {
+                    if(newValue == constant.VEDITA_STATUS_IDLE) return
                     this.showBox()
                 }, 100)
             }
@@ -149,6 +155,10 @@
             this.onAudioFinish()
         },
         methods: {
+            returnHome() {
+                this.setIdle()
+                this.stopAudio()
+            },
             modalOpen() {
                 setTimeout(() => {
                     let modal_height = document.querySelector('.modal-lg').offsetHeight
@@ -162,7 +172,7 @@
                 this.VEDITA_STATUS = this.constant.VEDITA_STATUS_CATEGORY
             },
             listSubCategory(id_category = null) {
-                if(id_category == null || id_category == false || id_category == "" || this.IS_PLAYING) {
+                if(id_category == null || id_category == false || id_category == "") {
                     return
                 }
                 this.showLoading()
@@ -192,7 +202,6 @@
             },
             setIdle() {
                 this.VEDITA_STATUS = constant.VEDITA_STATUS_IDLE
-                this.IDLE_INTERVAL = null
                 let all_class = document.querySelectorAll('div.fade-in-div')
                 for (let div = 0; div < all_class.length; div++) {
                     all_class[div].classList.remove('show')
