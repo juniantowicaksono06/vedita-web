@@ -26,7 +26,9 @@ export default {
         ],
         script: [
             {
-                src: 'js/record.js', async: true, defer: true
+                src: 'js/record.js', async: true, defer: true,
+                src: 'js/bootstrap.bundle.min.js', async: true, defer: true,
+                src: 'js/jquery.slim.min.js', async: true, defer: true
             }
         ]
     },

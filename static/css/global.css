@@ -5,6 +5,10 @@ html, body, body > #__nuxt, body > #__nuxt > #__layout, body > #__nuxt > #__layo
     max-height: 100%;
 }
 
+body {
+    background-color: #EBEBEB;
+}
+
 .fade-in-div {
     opacity: 0;           /* Initially invisible */
     transition: opacity 1s ease-in-out; /* Animation duration and easing */
@@ -17,7 +21,14 @@ html, body, body > #__nuxt, body > #__nuxt > #__layout, body > #__nuxt > #__layo
 .box-rounded {
     border-top-left-radius: 25px !important;
     border-top-right-radius: 25px !important;
+    border-bottom-right-radius: 25px !important;
+    border-bottom-left-radius: 25px !important;
 }
+
+.card, .card-body {
+    padding: 0;
+}
+
 .mic-icon {
     max-width: 30% !important;
 }
@@ -27,6 +38,13 @@ html, body, body > #__nuxt, body > #__nuxt > #__layout, body > #__nuxt > #__layo
 
 .selection_box {
     min-height: 10vh;
+    background-color: #a90324;
+}
+
+.welcome-screen {
+    background: linear-gradient(45deg, orange, red) !important;
+    margin: 0 !important;
+    max-width: 100%;
 }
 
 .my-align-vertically-center {
@@ -36,6 +54,11 @@ html, body, body > #__nuxt, body > #__nuxt > #__layout, body > #__nuxt > #__layo
 .selection_box_text {
     font-size: 1.8em;
     margin-bottom: 0;
+}
+
+.sub_category_text {
+    margin-bottom: 0;
+    color: #e8e8e8;
 }
 
 .media-button {
@@ -70,10 +93,127 @@ html, body, body > #__nuxt, body > #__nuxt > #__layout, body > #__nuxt > #__layo
     cursor: default !important;
 }
 
+.page-circle {
+    color: #7c7c7c;
+    border-radius: 50%;
+    width: 45px;
+    height: 45px;
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 10px;
+}
+
+.page-circle.active {
+    background: linear-gradient(45deg, orange, red);
+    color: white;
+}
+
 .link-no-color, .link-no-color:hover {
     color: #fff;
     text-decoration: none;
 }
+
+.sub_category_bottom_box {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    background: linear-gradient(45deg, orange, red); /* Create a gradient from orange to red */
+    height: 80px;
+    min-width: 100%;
+    border-top-left-radius: 45px;
+    border-top-right-radius: 45px;
+}
+
+.sub_category_top_box {
+    position: fixed;
+}
+
+.category_top_box {
+    position: absolute;
+}
+
+.sub_category_top_box, .category_top_box {
+    top: 0;
+    left: 0;
+    background: linear-gradient(45deg, orange, red); /* Create a gradient from orange to red */
+    border: 1px solid #ccc; /* Add a border for visual separation */;
+    min-width: 100%;
+    height: 150px;
+    border-bottom-left-radius: 45px;
+    border-bottom-right-radius: 45px;
+    z-index: 999;
+}
+
+.category_top_box {
+    height: 280px;
+    overflow: hidden;
+}
+
+.sub_category_top_box > img, .sub_category_top_box > button  {
+    position: fixed;
+}
+
+.category_top_box > button, .category_top_box > img {
+    position: absolute;
+}
+
+.sub_category_top_box #arrowBack, .category_top_box #arrowBack {
+    width: 50px;
+}
+
+.sub_category_top_box > #arrowBackBtn, .category_top_box > #arrowBackBtn {
+    top: 8px;
+    left: 20px;
+}
+
+.sub_category_top_box > #logoTelkomsel, .category_top_box > #logoTelkomsel {
+    width: 200px;
+    top: 10px;
+    right: 15px;
+}
+
+.sub_category_content {
+    margin-top: 150px;
+    text-align: center;
+}
+
+.text-small {
+    font-size: 1.0em !important;
+}
+
+.sub_category_bottom_box {
+    z-index: 999;
+}
+
+.scroll {
+    max-height: 100px;
+    overflow-y: auto;
+}
+
+#maskotVeditaBubble {
+    position: relative;
+    left: 180px;
+    top: -90px;
+    width: 380px;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+#maskotVeditaBubble h3 {
+    font-size: 1.4em;
+    position: relative;
+    top: 30px;
+}
+/* 
+.no-padding {
+    padding: 0 !important;
+}
+
+.big-container {
+    width: 100% !important;
+    max-width: 100% !important;
+} */
 
 .loading {   
     width: 100%;
@@ -93,9 +233,68 @@ html, body, body > #__nuxt, body > #__nuxt > #__layout, body > #__nuxt > #__layo
     height: auto;
 }
 
+@font-face {
+    font-family: 'TelkomselBatikRegular';
+    src: url('../fonts/TelkomselBatikSans-Regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'TelkomselBatikBold';
+    src: url('../fonts/TelkomselBatikSans-Bold.woff') format('woff');
+    font-weight: bold;
+    font-style: normal;
+}
+
+.telkomsel-batik-regular {
+    font-family: 'TelkomselBatikRegular', sans-serif;
+}
+
+.telkomsel-batik-bold {
+    font-family: 'TelkomselBatikBold', sans-serif;
+}
+
+#maskotVedita {
+    max-width: 45vw;
+}
+
+#maskotVedita2 {
+    width: 140px;
+    position: relative;
+    top: 90px;
+    left: 20px;
+}
+
+button#btnStartVedita {
+    position: relative;
+    /* top: -300px; */
+    top: -31vh;
+    left: 0;
+}
+
+#greeting {
+    position: absolute;
+    top: 40%;
+    right: 20px;
+}
+
+.text-orange {
+    color: #FF5C25;
+}
+
+.text-lg {
+    font-size: 4em;
+}
+
 @media only screen and (min-width: 768px) {
     .mic-icon {
         max-width: 25% !important;
+    }
+    button#btnStartVedita {
+        position: relative;
+        top: -90px;
+        left: 0;
     }
 }
 

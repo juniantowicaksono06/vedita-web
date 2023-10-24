@@ -1,180 +1,192 @@
 <template>
-    <div class="container py-3 mb-5">   
-        <div class="d-flex justify-content-center h-100" :class="{'align-items-center': (VEDITA_STATUS == constant.VEDITA_STATUS_IDLE)}">
-            <div class="card box">
-                <div class="card-header">
-                    <div class="d-flex justify-content-start">
-                        <img src="/img/maskot_vedita.png" alt="" class="img-fluid w-50">
-                    </div>
+    <div class="container py-1 px-0 mb-5" ref="mainContainer">
+        <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
+        <!-- WELCOME SCREEN -->
+        <div class="h-100" v-if="VEDITA_STATUS == constant.VEDITA_STATUS_IDLE">
+            <div class="position-relative h-100">
+                <div class="h-100 d-flex align-items-center">
+                    <img src="img/maskot_vedita.png" alt="Maskot Vedita" id="maskotVedita">
                 </div>
-            <div class="card-body px-5" :class="{'d-none': VEDITA_STATUS != constant.VEDITA_STATUS_IDLE}">
-                <div class="image-container" @click="triggerVedita()">
-                    <div class="image-overlay">
-                    <img src="/img/mulai_vedita.png" alt="" class="img-fluid w-50">
-                        <div class="image-text">Mulai veDita
-                        </div>
-                    </div>
-                </div>
-            </div>  
-            <div class="logo">
-                    <img src="/img/Logo_telkomsel.png">
-            </div>
-            <div class="Selamat-datang">
-                    <img src="/img/selamat_datang.png">
+                <button class="btn selection_box rounded-pill btn-block text-white" id="btnStartVedita" @click="triggerVedita()">
+                    <h3 class="telkomsel-batik-regular">Mulai veDita</h3>
+                </button>
+                <div id="greeting">
+                    <h3 class="telkomsel-batik-regular text-white" style="margin: 0;">
+                        Selamat datang di veDita
+                    </h3>
+                    <p class="telkomsel-batik-regular text-white" style="margin: 0;">
+                        live digital assistant siap membantu anda
+                    </p>
                 </div>
             </div>
         </div>
-<!-- Selesai Mulai Vedita -->
-     <div class="loading" :class="{'d-none': LOADING == false}">
-        </div>
+        <!-- AKHIR WELCOME SCREEN -->
+        <div class="loading" :class="{'d-none': LOADING == false}"></div>
+        <b-modal class="modal-item" centered v-model="IS_PROMO_MODAL_OPEN" @hide="promoCloseModal" hide-footer size="lg" hide-header>
+            <div class="container-fluid" v-on:click="promoCloseModal"></div>
+            <iframe :src="PROMO_URL" frameborder="0" class="w-100" style="min-height: 1024px;"></iframe>
+        </b-modal>
         <b-modal class="modal-item" centered v-model="IS_MODAL_OPEN" @show="modalOpen" @hide="closeModal" hide-footer size="lg" hide-header>
             <div class="container-fluid" v-on:click="closeModal"></div>
             <div class="d-block">
                 <div class="container-fluid">
-                    <div class="w-100 justify-content-center d-flex">
-                        <img :src="MODAL_IMG" alt="faq image" class="img-fluid" :class="{'d-none': (MODAL_IMG == '' || MODAL_IMG == null)}" />
-                    </div>
+                    <div class="w-100 justify-content-center d-flex"> <img :src="MODAL_IMG" alt="faq image" class="img-fluid" :class="{'d-none': (MODAL_IMG == '' || MODAL_IMG == null)}" /> </div>
                 </div>
             </div>
             <div class="container">
                 <div class="row mt-4">
                     <div class="col-12" v-html="MODAL_TEXT"></div>
                 </div>
-            </div>
-            <!-- <b-button class="mt-3 btn-danger selection_box" block @click="closeModal">Tutup</b-button> -->
+            </div> <!-- <b-button class="mt-3 btn-danger selection_box" block @click="closeModal">Tutup</b-button> -->
         </b-modal>
         <b-modal class="modal-item" centered v-model="IS_MODAL_RECORD_OPEN" @hide="closeRecordModal" hide-footer size="lg" hide-header>
-        <div class="container-fluid" v-on:click="closeRecordModal"></div>
-           <div class="d-flex justify-content-center">
-                <img :src=mic_img alt="" class="mic-icon" v-on:click="onMicClick()">
-            </div>
-        <div class="mt-3">
+            <div class="container-fluid" v-on:click="closeRecordModal"></div>
+            <div class="d-flex justify-content-center"> <img :src=mic_img alt="" class="mic-icon" v-on:click="onMicClick()"> </div>
+            <div class="mt-3">
                 <h4 class="text-center">{{ text_info }}</h4>
             </div>
             <b-button class="mt-3 btn-danger" block @click="closeRecordModal">Tutup</b-button>
         </b-modal>
-        <div class="media-button" :class="{'d-none': !IS_PLAYING || VEDITA_STATUS == constant.VEDITA_STATUS_SUB_CATEGORY}" id="mediaButton">
-            <button class="btn btn-lg" :class="{'btn-disabled': !IS_PLAYING, 'btn-danger': IS_PLAYING}" v-on:click="stopAudio()">
-                <span><i class="fas fa-stop fa-2xl"></i></span>
-            </button>
-        </div>
-        <div class="media-button" :class="{'d-none': (VEDITA_STATUS != constant.VEDITA_STATUS_SUB_CATEGORY || !IS_PLAYING)}" id="mediaButton2">
-            <button class="btn no-rounded btn-lg" :class="{'btn-disabled': !IS_PLAYING, 'btn-danger': IS_PLAYING}" v-on:click="closeModal()">
-                Tutup
-            </button>
-        </div>
-        <div class="media-button" :class="{'d-none': (!(VEDITA_STATUS == constant.VEDITA_STATUS_SUB_CATEGORY || VEDITA_STATUS == constant.VEDITA_STATUS_CATEGORY) || IS_PLAYING)}" id="mediaButton3">
-            <button class="btn no-rounded btn-lg" :class="{'btn-danger': !IS_PLAYING}" v-on:click="returnHome()">
-                <span><i class="fas fa-home fa-2xl"></i></span>
-            </button>
-        </div>
-        
-        <audio id="audioPlayer" class="d-none"></audio>
-<div class="container py-3 mb-5"> 
- <!-- halaman 2 setelah mulai vedita -->     
-
-<div class="Abu" :class="{'d-none': !(VEDITA_STATUS == constant.VEDITA_STATUS_CATEGORY)}">
-    <div class="putih">
-        <div class= "Informasi" style="margin-top: 100px">
-        <img src="/img/Informasi.png">
-</div>
-<div class="sim-container">
-  <div class="sim" v-for="category in LIST_CATEGORY" v-if="category.id === 1">
-    <img src="/img/SIM-icon.png">
-    <div v-if="category.id === 1">
-      <div class="sim" v-on:click="listSubCategory(category.id)">
-        <p class="selection_box_text">{{ category.category_name }}</p>
-      </div>
-    </div>
-  </div>
-
-  <div class="sim" v-for="category in LIST_CATEGORY" v-if="category.id === 2">
-    <img src="/img/Roaming.png">
-    <div v-if="category.id === 2">
-      <div class="roaming" v-on:click="listSubCategory(category.id)">
-        <p class="selection_box_text">{{ category.category_name }}</p>
-      </div>
-    </div>
-  </div>
-
-  <div class="sim" v-for="category in LIST_CATEGORY" v-if="category.id === 3">
-    <img src="/img/Indihome.png">
-    <div v-if="category.id === 3">
-      <div class="sim" v-on:click="listSubCategory(category.id)">
-        <p class="selection_box_text">{{ category.category_name }}</p>
-      </div>
-    </div>
-  </div>
-
-  <div class="sim" v-for="category in LIST_CATEGORY" v-if="category.id === 4">
-    <img src="/img/TselOne.png">
-    <div v-if="category.id === 4">
-      <div class="sim" v-on:click="listSubCategory(category.id)">
-        <p class="selection_box_text">{{ category.category_name }}</p>
-      </div>
-    </div>
-  </div>
-</div>
-</div>
-
-<div class="layanan-container">
-<div class="putih">
-            <img src="/img/layanan.png" style="margin-top: 100px">
-         <br><br>
-
-<div class="menu2-container">
-  <div class="menu2">
-    <a href="https://grapari.telkomsel.co.id/goshow/registration?grapari_id=32MSB1SH">
-      <img src="/img/Antrian.png" alt="ANTREAN" class="icon">
-      <p class="selection_box_text">ANTREAN</p>
-    </a>
-  </div>
-
-  <div class="menu2" v-on:click="showRecordModal()">
-      <img src="/img/Question.png" alt="LAYANAN" class="icon">
-      <p class="selection_box_text">LAYANAN</p>
-    </div>
-  </div>
-</div>
-</div>
-
-<div class="info-promo">
-    <div class="putih">
-       
-        </div>
-    </div>
-
-    <img src="img/background-orange.png">
-
-</div>
-
-<!-- sub kategori-->
-<div class="Abu" :class="{'d-none': !(VEDITA_STATUS == constant.VEDITA_STATUS_SUB_CATEGORY)}">
-        <div class= "Informasi" style="margin-top: 100px">
-        <img src="/img/Informasi-Kartu-Sim.png"> </div>
-   <!-- <div class="card-body box-rounded mt-3" :class="{'d-none': !(VEDITA_STATUS == constant.VEDITA_STATUS_SUB_CATEGORY)}">
-                    <div class="card">-->
-                        <div class="col-md-6 fade-in-div category col-sm-12 col-12 mb-3" v-for="sub_category in LIST_SUB_CATEGORY">
-    <div class="selection_box btn btn-danger text-center btn-block d-flex align-items-center justify-content-center" @click="infoSpeech(sub_category['id'])">
-      <p class="selection_box_text">{{ sub_category['question'] }}</p>
-    </div>
-  </div>
-
-                    <!-- <div class="col-md-6 fade-in-div sub_category col-sm-12 col-12 mb-3" v-for="sub_category in LIST_SUB_CATEGORY">
-                            <div class="selection_box btn btn-danger text-center btn-block d-flex align-items-center justify-content-center" v-on:click="infoSpeech(sub_category['id'])">
-                                <p class="selection_box_text">{{ sub_category['question'] }}</p>--> 
-                    
-                    
-                    
-                       <!-- <div class="col-12 fade-in-div sub_category">
-                            <div class="selection_box btn btn-danger text-center btn-block d-flex align-items-center justify-content-center" v-on:click="subCategoryBack()">
-                                <p class="selection_box_text">Kembali</p>
+        <div class="media-button" :class="{'d-none': !IS_PLAYING || VEDITA_STATUS == constant.VEDITA_STATUS_SUB_CATEGORY}" id="mediaButton"> <button class="btn btn-lg" :class="{'btn-disabled': !IS_PLAYING, 'btn-danger': IS_PLAYING}" v-on:click="stopAudio()"> <span> <i class="fas fa-stop fa-2xl"></i> </span> </button> </div>
+        <div class="media-button" :class="{'d-none': (VEDITA_STATUS != constant.VEDITA_STATUS_SUB_CATEGORY || !IS_PLAYING)}" id="mediaButton2"> <button class="btn no-rounded btn-lg" :class="{'btn-disabled': !IS_PLAYING, 'btn-danger': IS_PLAYING}" v-on:click="closeModal()"> Tutup </button> </div> <!-- <div class="media-button" :class="{'d-none': (!(VEDITA_STATUS == constant.VEDITA_STATUS_SUB_CATEGORY || VEDITA_STATUS == constant.VEDITA_STATUS_CATEGORY) || IS_PLAYING)}" id="mediaButton3"><button class="btn no-rounded btn-lg" :class="{'btn-danger': !IS_PLAYING}" v-on:click="returnHome()"><span><i class="fas fa-home fa-2xl"></i></span></button></div> --> <audio id="audioPlayer" class="d-none"></audio>
+        <div class="container-fluid py-0 px-0" v-if="VEDITA_STATUS == constant.VEDITA_STATUS_CATEGORY || VEDITA_STATUS == constant.VEDITA_STATUS_SUB_CATEGORY">
+            <div class="category_top_box" v-if="VEDITA_STATUS == constant.VEDITA_STATUS_CATEGORY"> 
+                <button class="btn" id="arrowBackBtn" @click="returnHome()"> 
+                    <img src="img/arrow-back.png" alt="arrow-back" id="arrowBack"> 
+                </button> 
+                <img src="img/Logo_telkomsel.png" alt="logo telkomsel" id="logoTelkomsel"> 
+                <div class="container-fluid">
+                    <img src="img/maskot_vedita.png" alt="Maskot Vedita" id="maskotVedita2">
+                    <div id="maskotVeditaBubble" class="card rounded-pill">
+                        <div class="card-body rounded-pill">
+                            <div class="d-flex">
+                                <img src="img/pesan.png" alt="text bubble" class="mr-3">
+                                <h3 class="telkomsel-batik-regular">Hai Vedita siap bantu kebutuhanmu ya!</h3>
                             </div>
-                        </div>-->
+                        </div>
                     </div>
-            </div></div>
-
-        <!-- <div class="d-flex justify-content-center h-100" :class="{'my-align-vertically-center': VEDITA_STATUS != constant.VEDITA_STATUS_IDLE, 'align-items-center': VEDITA_STATUS == constant.VEDITA_STATUS_IDLE, 'd-none': VEDITA_STATUS == constant.VEDITA_STATUS_SUB_CATEGORY}"></div> -->
+                </div>
+            </div>
+            <!-- halaman 2 setelah mulai vedita -->
+            <div :class="{'d-none': !(VEDITA_STATUS == constant.VEDITA_STATUS_CATEGORY)}">
+                <div style="margin-top: 320px;">
+                    <div class="card box-rounded"> 
+                        <div class="card-body box-rounded">
+                            <h1 class="telkomsel-batik-bold text-center text-orange text-lg mb-5 mt-3">Informasi</h1>
+                            <div class="container-fluid">
+                                <div class="row">
+                                    <div class="col-3" style="padding: 0">
+                                        <div class="d-flex justify-content-center" v-on:click="listSubCategory(1, 'KARTU SIM')">
+                                            <img src="/img/SIM-icon.png" alt="KARTU SIM" width="48" style="position: relative; top: -15px">
+                                        </div>
+                                        <br/>
+                                        <p class="selection_box_text text-center telkomsel-batik-regular text-small" style="position: relative; top: -37px">KARTU SIM</p>
+                                    </div>
+                                    <div class="col-3"  v-on:click="listSubCategory(2, 'ROAMING')" style="padding: 0">
+                                        <div class="d-flex justify-content-center">
+                                            <img src="/img/Roaming.png" alt="ROAMING" width="64" style="position: relative; top: -15px">
+                                        </div>
+                                        <br/>
+                                        <p class="selection_box_text text-center telkomsel-batik-regular text-small" style="position: relative; top: -41px">ROAMING</p>
+                                    </div>
+                                    <div class="col-3"  v-on:click="listSubCategory(3, 'INDIHOME')" style="padding: 0">
+                                        <div class="d-flex justify-content-center">
+                                            <img src="/img/Indihome.png" alt="INDIHOME" width="64" style="position: relative; top: -15px">
+                                        </div>
+                                        <br/>
+                                        <p class="selection_box_text text-center telkomsel-batik-regular text-small" style="position: relative; top: -37px">INDIHOME</p>
+                                    </div>
+                                    <div class="col-3"  v-on:click="listSubCategory(4, 'TELKOMSEL ONE')" style="padding: 0">
+                                        <div class="d-flex justify-content-center">
+                                            <img src="/img/TselOne.png" alt="Telkomsel One" width="64" style="position: relative; top: -10px">
+                                        </div>
+                                        <br/>
+                                        <p class="selection_box_text text-center telkomsel-batik-regular text-small" style="position: relative; top: -17px">TELKOMSEL ONE</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div style="margin-top: 10px;">
+                    <div class="card box-rounded"> 
+                        <div class="card-body box-rounded">
+                            <h1 class="telkomsel-batik-bold text-center text-orange text-lg mb-5 mt-3">Layanan</h1>
+                            <div class="container-fluid">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <a href="https://grapari.telkomsel.co.id/goshow/registration?grapari_id=32MSB1SH" class="href" style="text-decoration: none; color: black;">
+                                            <div class="d-flex justify-content-center">
+                                                <img src="/img/Antrian.png" alt="ANTREAN" width="64">
+                                            </div>
+                                            <br/>
+                                            <p class="selection_box_text text-center telkomsel-batik-regular">ANTREAN</p>
+                                        </a>
+                                    </div>
+                                    <div class="col-6" v-on:click="showRecordModal()">
+                                        <div class="d-flex justify-content-center" style="position: relative; top: -15px">
+                                            <img src="/img/Question.png" alt="LAYANAN" width="64">
+                                        </div>
+                                        <br/>
+                                        <p class="selection_box_text text-center telkomsel-batik-regular" style="position: relative; top: -25px">PERTANYAAN UMUM</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div style="margin-top: 10px;">
+                    <div class="card box-rounded" style="margin-bottom: 200px">
+                        <div class="card-body box-rounded">
+                            <div id="promoInfo" class="carousel slide" data-ride="carousel">
+                                <div class="carousel-inner">
+                                    <div class="carousel-item" :class="{'active': index == 0}" v-for="(pr, index) in PROMO">
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <img :src="pr['promo_image_url']" class="d-block w-100 box-rounded" alt="...">
+                                            </div>
+                                            <div class="col-6">
+                                                <h3 class="telkomsel-batik-regular text-danger mt-2">{{ pr['promo_platform'] }}</h3>
+                                                <h2 class="telkomsel-batik-regular mt-2">{{ pr['promo_title'] }}</h2>
+                                                <button class="btn btn-danger telkomsel-batik-regular text-white rounded-pill" v-on:click="showPromo(pr['id'])">Click Me for Detail</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button class="carousel-control-prev" type="button" data-target="#promoInfo" data-slide="prev">
+                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                    <span class="sr-only">Previous</span>
+                                </button>
+                                <button class="carousel-control-next" type="button" data-target="#promoInfo" data-slide="next">
+                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                    <span class="sr-only">Next</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div> <!-- sub kategori-->
+            <div style="margin-bottom: 100px;" :class="{'d-none': !(VEDITA_STATUS == constant.VEDITA_STATUS_SUB_CATEGORY)}">
+                <div class="sub_category_top_box"> <button class="btn" id="arrowBackBtn" @click="subCategoryBack()"> <img src="img/arrow-back.png" alt="arrow-back" id="arrowBack"> </button> <img src="img/Logo_telkomsel.png" alt="logo telkomsel" id="logoTelkomsel"> </div>
+                <div class="sub_category_content">
+                    <h1 class="telkomsel-batik-regular">INFORMASI {{ SUB_CATEGORY_TITLE }}</h1>
+                </div>
+                <div class="sub_category col-12" v-for="sub_category in SHOWN_LIST_SUB_CATEGORY">
+                    <div class="row mb-3">
+                        <div class="selection_box box-rounded btn text-center btn-block d-flex align-items-center justify-content-center" @click="infoSpeech(sub_category['id'])">
+                            <h2 class="sub_category_text telkomsel-batik-regular" style="margin-top: 0;">{{ sub_category['question'] }}</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-center mt-5"> <button class="btn mr-3" :class="{'d-none': SUB_CATEGORY_INDEX == 0}" @click="prevSubCategory()"> <img src="img/arrow-left-red.png" alt="arrow left"> </button>
+                    <h4 class="page-circle text-center" :class="{'active': ((SUB_CATEGORY_INDEX + SUB_CATEGORY_PER_PAGE) / SUB_CATEGORY_PER_PAGE  == number)}" v-for="number in range(1, TOTAL_SUB_CATEGORY_PAGE)" :key="number">{{ number }}</h4> <button class="btn" @click="nextSubCategory()" :class="{'d-none': SUB_CATEGORY_INDEX + SHOWN_LIST_SUB_CATEGORY.length >= LIST_SUB_CATEGORY.length - 1}"> <img src="img/arrow-right-red.png" alt="arrow right"> </button>
+                </div>
+                <div class="sub_category_bottom_box"></div>
+            </div>
+            <div class="sub_category_bottom_box"></div>
+        </div>
+    </div> <!-- <div class="d-flex justify-content-center h-100" :class="{'my-align-vertically-center': VEDITA_STATUS != constant.VEDITA_STATUS_IDLE, 'align-items-center': VEDITA_STATUS == constant.VEDITA_STATUS_IDLE, 'd-none': VEDITA_STATUS == constant.VEDITA_STATUS_SUB_CATEGORY}"></div> -->
 </template>
 
 <script>
@@ -188,7 +200,7 @@
         },
         data() {
             return {
-                VEDITA_STATUS: constant.VEDITA_STATUS_IDLE,
+                VEDITA_STATUS: null,
                 IDLE_INTERVAL: null,
                 INTERVAL_TIME: 120000,
                 constant,
@@ -196,6 +208,7 @@
                 READ_TXT: tts_text.original_text,
                 IS_PLAYING: false,
                 IS_MODAL_OPEN: false,
+                IS_PROMO_MODAL_OPEN: false,
                 MODAL_TITLE: '',
                 MODAL_TEXT: '',
                 IS_MODAL_RECORD_OPEN: false,
@@ -210,16 +223,27 @@
                 MODAL_IMG: '',
                 LOADING: false,
                 LIST_CATEGORY: [],
-                LIST_SUB_CATEGORY: []
+                LIST_SUB_CATEGORY: [],
+                SHOWN_LIST_SUB_CATEGORY: [],
+                TOTAL_SUB_CATEGORY_PAGE: 0,
+                SUB_CATEGORY_PER_PAGE: 6,
+                SUB_CATEGORY_INDEX: 0,
+                SUB_CATEGORY_TITLE: '',
+                PROMO: [],
+                PROMO_URL: ""
             }
         },
         watch: {
             VEDITA_STATUS(newValue, oldValue) {
+                this.$refs.mainContainer.classList.remove('welcome-screen')
                 if(newValue == constant.VEDITA_STATUS_CATEGORY || newValue == constant.VEDITA_STATUS_SUB_CATEGORY) {
                     document.querySelector('body').classList.add('height-auto')
                 }
                 else {
                     document.querySelector('body').classList.remove('height-auto')
+                }
+                if(newValue == constant.VEDITA_STATUS_IDLE) {
+                    this.$refs.mainContainer.classList.add('welcome-screen')
                 }
                 setTimeout(() => {
                     if(newValue == constant.VEDITA_STATUS_IDLE) return
@@ -230,8 +254,30 @@
         mounted() {
             this.loadCategory()
             this.onAudioFinish()
+            this.VEDITA_STATUS = this.constant.VEDITA_STATUS_IDLE
         },
         methods: {
+            showPromo(id) {
+                this.PROMO_URL = `https://10.37.190.192/vedita-show-web?promo_id=${id}`
+                this.promoOpenModal()
+            },
+            prevSubCategory() {
+                this.SUB_CATEGORY_INDEX -= 6
+                if (this.SUB_CATEGORY_INDEX - 1 < 0) {
+                    this.SHOWN_LIST_SUB_CATEGORY = this.LIST_SUB_CATEGORY.slice(this.SUB_CATEGORY_INDEX, this.SUB_CATEGORY_PER_PAGE + this.SUB_CATEGORY_INDEX)
+                }
+                else {
+                    this.SHOWN_LIST_SUB_CATEGORY = this.LIST_SUB_CATEGORY.slice(this.SUB_CATEGORY_INDEX - 1, this.SUB_CATEGORY_PER_PAGE + this.SUB_CATEGORY_INDEX)
+                }
+
+            },
+            nextSubCategory() {
+                this.SUB_CATEGORY_INDEX += 6
+                this.SHOWN_LIST_SUB_CATEGORY = this.LIST_SUB_CATEGORY.slice(this.SUB_CATEGORY_INDEX - 1, this.SUB_CATEGORY_PER_PAGE + this.SUB_CATEGORY_INDEX)
+            },
+            range(start, end) {
+                return Array.from({ length: end - start + 1 }, (_, i) => start + i);
+            },
             returnHome() {
                 this.setIdle()
                 this.stopAudio()
@@ -248,10 +294,11 @@
             subCategoryBack() {
                 this.VEDITA_STATUS = this.constant.VEDITA_STATUS_CATEGORY
             },
-            listSubCategory(id_category = null) {
+            listSubCategory(id_category = null, title = "") {
                 if(id_category == null || id_category == false || id_category == "") {
                     return
                 }
+                this.SUB_CATEGORY_TITLE = title
                 this.showLoading()
                 // this.VEDITA_STATUS = constant.VEDITA_STATUS_SUB_CATEGORY
                 this.$axios.$get(`vedita-cs-list-subcategory?id_category=${id_category}`, {
@@ -263,6 +310,8 @@
                         const {data} = response
                         this.LIST_SUB_CATEGORY = data['sub_category']
                         this.VEDITA_STATUS = this.constant.VEDITA_STATUS_SUB_CATEGORY
+                        this.TOTAL_SUB_CATEGORY_PAGE = Math.ceil(this.LIST_SUB_CATEGORY.length / 6)
+                        this.SHOWN_LIST_SUB_CATEGORY = this.LIST_SUB_CATEGORY.slice(0, this.SUB_CATEGORY_PER_PAGE)
                     }
                     this.hideLoading()
                 })
@@ -393,7 +442,6 @@
                     this.stopRecording(callback)
                     this.mic_img = "/img/mic-blue.png"
                     this.text_info = "Klik tombol untuk mulai berbicara"
-                    console.log("STOP RECORDING!")
                 }
             },
             stopAudio() {
@@ -459,6 +507,14 @@
             closeModal() {
                 this.IS_MODAL_OPEN = false;
                 this.stopAudio()
+            },
+            promoOpenModal() {
+                this.IS_PROMO_MODAL_OPEN = true;
+                this.stopAudio();
+            },
+            promoCloseModal() {
+                this.IS_PROMO_MODAL_OPEN = false;
+                this.stopAudio();
             },
             closeRecordModal() {
                 this.IS_MODAL_RECORD_OPEN = false;
@@ -544,6 +600,12 @@
                         'x-api-key': process.env.ACCESS_TOKEN
                     }
                 }).then((response) => {
+                    this.$axios.$get('vedita-info-promo')
+                    .then((response) => {
+                        if(response['status_code'] == 200) {
+                            this.PROMO = response['data']   
+                        }
+                    })
                     this.hideLoading()
                     const {data} = response
                     if("audio_b64" in data) {
