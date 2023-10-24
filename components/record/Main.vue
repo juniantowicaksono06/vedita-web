@@ -1,7 +1,31 @@
 <template>
-    <div class="container py-3 mb-5">
-        <div class="loading" :class="{'d-none': LOADING == false}">
-            <ClipLoader color="red" size="50px" />
+    <div class="container py-3 mb-5">   
+        <div class="d-flex justify-content-center h-100" :class="{'align-items-center': (VEDITA_STATUS == constant.VEDITA_STATUS_IDLE)}">
+            <div class="card box">
+                <div class="card-header">
+                    <div class="d-flex justify-content-start">
+                        <img src="/img/maskot_vedita.png" alt="" class="img-fluid w-50">
+                    </div>
+                </div>
+            <div class="card-body px-5" :class="{'d-none': VEDITA_STATUS != constant.VEDITA_STATUS_IDLE}">
+                <div class="image-container" @click="triggerVedita()">
+                    <div class="image-overlay">
+                    <img src="/img/mulai_vedita.png" alt="" class="img-fluid w-50">
+                        <div class="image-text">Mulai veDita
+                        </div>
+                    </div>
+                </div>
+            </div>  
+            <div class="logo">
+                    <img src="/img/Logo_telkomsel.png">
+            </div>
+            <div class="Selamat-datang">
+                    <img src="/img/selamat_datang.png">
+                </div>
+            </div>
+        </div>
+<!-- Selesai Mulai Vedita -->
+     <div class="loading" :class="{'d-none': LOADING == false}">
         </div>
         <b-modal class="modal-item" centered v-model="IS_MODAL_OPEN" @show="modalOpen" @hide="closeModal" hide-footer size="lg" hide-header>
             <div class="container-fluid" v-on:click="closeModal"></div>
@@ -20,11 +44,11 @@
             <!-- <b-button class="mt-3 btn-danger selection_box" block @click="closeModal">Tutup</b-button> -->
         </b-modal>
         <b-modal class="modal-item" centered v-model="IS_MODAL_RECORD_OPEN" @hide="closeRecordModal" hide-footer size="lg" hide-header>
-            <div class="container-fluid" v-on:click="closeRecordModal"></div>
-            <div class="d-flex justify-content-center">
+        <div class="container-fluid" v-on:click="closeRecordModal"></div>
+           <div class="d-flex justify-content-center">
                 <img :src=mic_img alt="" class="mic-icon" v-on:click="onMicClick()">
             </div>
-            <div class="mt-3">
+        <div class="mt-3">
                 <h4 class="text-center">{{ text_info }}</h4>
             </div>
             <b-button class="mt-3 btn-danger" block @click="closeRecordModal">Tutup</b-button>
@@ -44,70 +68,123 @@
                 <span><i class="fas fa-home fa-2xl"></i></span>
             </button>
         </div>
+        
         <audio id="audioPlayer" class="d-none"></audio>
-        <div class="d-flex justify-content-center h-100" :class="{'align-items-center': (VEDITA_STATUS == constant.VEDITA_STATUS_IDLE)}">
-            <div class="card box-rounded">
-                <div class="card-header box-rounded">
-                    <div class="d-flex justify-content-center">
-                        <img src="/img/logo.png" alt="" class="img-fluid w-50">
-                    </div>
-                </div>
-                <div class="card-body box-rounded px-5" :class="{'d-none': VEDITA_STATUS != constant.VEDITA_STATUS_IDLE}">
-                    <div class="selection_box btn btn-danger text-center btn-block d-flex align-items-center justify-content-center" v-on:click="triggerVedita()">
-                        <p class="selection_box_text">Klik tombol untuk berinteraksi dengan Vedita</p>
-                    </div>
-                </div>
-                <div class="card-body box-rounded mt-3" :class="{'d-none': !(VEDITA_STATUS == constant.VEDITA_STATUS_CATEGORY)}">
-                    <div class="row">
-                        <div class="col-md-6 fade-in-div category col-sm-12 col-12 mb-3" v-for="category in LIST_CATEGORY">
-                            <div class="selection_box btn btn-danger text-center btn-block d-flex align-items-center justify-content-center" v-on:click="listSubCategory(category['id'])">
-                                <p class="selection_box_text">{{ category['category_name'] }}</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12 fade-in-div category mb-3">
-                            <a href="https://grapari.telkomsel.co.id/goshow/registration?grapari_id=32MSB1SH" class="link-no-color selection_box btn btn-danger text-center btn-block d-flex align-items-center justify-content-center">
-                                <p class="selection_box_text">Ambil Nomor Antrian</p>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12 fade-in-div category">
-                            <div class="selection_box btn btn-danger text-center btn-block d-flex align-items-center justify-content-center" v-on:click="showRecordModal()">
-                                <p class="selection_box_text">Pertanyaan Umum Lainnya</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-body box-rounded mt-3" :class="{'d-none': !(VEDITA_STATUS == constant.VEDITA_STATUS_SUB_CATEGORY)}">
-                    <div class="row">
-                        <div class="col-md-6 fade-in-div sub_category col-sm-12 col-12 mb-3" v-for="sub_category in LIST_SUB_CATEGORY">
+<div class="container py-3 mb-5"> 
+ <!-- halaman 2 setelah mulai vedita -->     
+
+<div class="Abu" :class="{'d-none': !(VEDITA_STATUS == constant.VEDITA_STATUS_CATEGORY)}">
+    <div class="putih">
+        <div class= "Informasi" style="margin-top: 100px">
+        <img src="/img/Informasi.png">
+</div>
+<div class="sim-container">
+  <div class="sim" v-for="category in LIST_CATEGORY" v-if="category.id === 1">
+    <img src="/img/SIM-icon.png">
+    <div v-if="category.id === 1">
+      <div class="sim" v-on:click="listSubCategory(category.id)">
+        <p class="selection_box_text">{{ category.category_name }}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="sim" v-for="category in LIST_CATEGORY" v-if="category.id === 2">
+    <img src="/img/Roaming.png">
+    <div v-if="category.id === 2">
+      <div class="roaming" v-on:click="listSubCategory(category.id)">
+        <p class="selection_box_text">{{ category.category_name }}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="sim" v-for="category in LIST_CATEGORY" v-if="category.id === 3">
+    <img src="/img/Indihome.png">
+    <div v-if="category.id === 3">
+      <div class="sim" v-on:click="listSubCategory(category.id)">
+        <p class="selection_box_text">{{ category.category_name }}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="sim" v-for="category in LIST_CATEGORY" v-if="category.id === 4">
+    <img src="/img/TselOne.png">
+    <div v-if="category.id === 4">
+      <div class="sim" v-on:click="listSubCategory(category.id)">
+        <p class="selection_box_text">{{ category.category_name }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="layanan-container">
+<div class="putih">
+            <img src="/img/layanan.png" style="margin-top: 100px">
+         <br><br>
+
+<div class="menu2-container">
+  <div class="menu2">
+    <a href="https://grapari.telkomsel.co.id/goshow/registration?grapari_id=32MSB1SH">
+      <img src="/img/Antrian.png" alt="ANTREAN" class="icon">
+      <p class="selection_box_text">ANTREAN</p>
+    </a>
+  </div>
+
+  <div class="menu2" v-on:click="showRecordModal()">
+      <img src="/img/Question.png" alt="LAYANAN" class="icon">
+      <p class="selection_box_text">LAYANAN</p>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="info-promo">
+    <div class="putih">
+       
+        </div>
+    </div>
+
+    <img src="img/background-orange.png">
+
+</div>
+
+<!-- sub kategori-->
+<div class="Abu" :class="{'d-none': !(VEDITA_STATUS == constant.VEDITA_STATUS_SUB_CATEGORY)}">
+        <div class= "Informasi" style="margin-top: 100px">
+        <img src="/img/Informasi-Kartu-Sim.png"> </div>
+   <!-- <div class="card-body box-rounded mt-3" :class="{'d-none': !(VEDITA_STATUS == constant.VEDITA_STATUS_SUB_CATEGORY)}">
+                    <div class="card">-->
+                        <div class="col-md-6 fade-in-div category col-sm-12 col-12 mb-3" v-for="sub_category in LIST_SUB_CATEGORY">
+    <div class="selection_box btn btn-danger text-center btn-block d-flex align-items-center justify-content-center" @click="infoSpeech(sub_category['id'])">
+      <p class="selection_box_text">{{ sub_category['question'] }}</p>
+    </div>
+  </div>
+
+                    <!-- <div class="col-md-6 fade-in-div sub_category col-sm-12 col-12 mb-3" v-for="sub_category in LIST_SUB_CATEGORY">
                             <div class="selection_box btn btn-danger text-center btn-block d-flex align-items-center justify-content-center" v-on:click="infoSpeech(sub_category['id'])">
-                                <p class="selection_box_text">{{ sub_category['question'] }}</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12 fade-in-div sub_category">
+                                <p class="selection_box_text">{{ sub_category['question'] }}</p>--> 
+                    
+                    
+                    
+                       <!-- <div class="col-12 fade-in-div sub_category">
                             <div class="selection_box btn btn-danger text-center btn-block d-flex align-items-center justify-content-center" v-on:click="subCategoryBack()">
                                 <p class="selection_box_text">Kembali</p>
                             </div>
-                        </div>
+                        </div>-->
                     </div>
-                </div>
-            </div>
-        </div>
+            </div></div>
+
         <!-- <div class="d-flex justify-content-center h-100" :class="{'my-align-vertically-center': VEDITA_STATUS != constant.VEDITA_STATUS_IDLE, 'align-items-center': VEDITA_STATUS == constant.VEDITA_STATUS_IDLE, 'd-none': VEDITA_STATUS == constant.VEDITA_STATUS_SUB_CATEGORY}"></div> -->
-    </div>
 </template>
+
 <script>
     import constant from '../../config/constant';
     import tts_text from '../../misc/text_to_tts';
     import ClipLoader from 'vue-spinner/src/ClipLoader.vue'
     export default {
         components: {
-            ClipLoader
+            ClipLoader,
+            name: 'MyComponent'
         },
         data() {
             return {
@@ -493,6 +570,163 @@
                     // this.IDLE_INTERVAL = setInterval(this.setIdle, this.INTERVAL_TIME)
                 })
             }
-        },
+        }
     }
 </script>
+<style scoped>
+
+.card.box{
+    background-image: url('/img/background.png');
+    background-size: cover;   
+    width: 100%
+}
+.my-component {
+  background-image: url('/img/background.png');
+  background-size: cover; 
+  background-position: center;  
+  width: 100%;
+  
+}
+.component_mulai{
+    background-image: url('/img/mulai_vedita.png');
+    background-position: static;  
+    height: 30px; 
+    position: relative;
+    z-index: 2;
+}
+.image-container {
+  position: center;
+  width: 100%;
+  left: 0%;
+}
+.image-overlay {
+  position: relative;
+  left: 25%;
+  width: 100%;
+  display: inline-block;
+  text-align: right; 
+}
+.image-text {
+  position: absolute;
+  top: 20%;
+  left: 15%;
+  border-radius: 5px;
+  font-size: 26px;
+  color: 	#FFFFFF
+}
+.card-header img {
+    margin-top: 40%; 
+}
+.image-overlay img {
+  display: block;
+  width: 100%;
+}
+.logo{
+position: absolute;
+  top: 8px;
+  right: 16px;
+}
+.Selamat-datang{
+  position: absolute;
+  top: 50%;
+  right: 10%;
+}
+.Informasi{
+    padding-top: 60px;
+    margin-top: 20px;
+    text-align: center;
+}
+
+.sim-container {
+  display: flex;
+  padding-top: 20px;
+  padding-bottom: 50px;
+  justify-content: space-between; 
+  align-items: center; 
+  flex-wrap: nowrap; }
+  
+.sim, .roaming, .telkomsel-one {
+  display: flex;
+  flex-direction: column; 
+  align-items: center; 
+  text-align: center; 
+  margin: 0 10px; 
+  padding-left: 15px;
+  padding-right: 15px;
+}
+.sim img, .roaming img, .telkomsel-one img {
+  width: 150px; 
+  height: 150px; 
+}
+.selection_box_text {
+  margin-top: 5px; 
+}
+.menu2-container {
+  display: flex;
+  justify-content: center;
+  align-items: center; 
+}
+.menu2 {
+  display: flex;
+  flex-direction: column;
+  align-items: center; 
+  text-align: center; 
+  margin: 0 10px;
+  margin-right: 50px;
+  border-spacing: 50px;
+}
+.menu2 img {
+width: 150px; 
+height: 100px; 
+}
+.icon {
+width: 150px; 
+height: 100px; 
+}
+.selection_box_text {
+  margin-top: 5px; 
+}
+
+.Abu {
+    background-image: url("/img/Background-abu.png");
+    text-align: center;
+    padding-top: 20px;
+    position: relative; 
+    z-index: 1; 
+}
+.putih {
+
+    margin-top: 10px;
+    background-image: url('/img/background_putih.png');
+    width: 100%; 
+    height: 425px; 
+    position: relative;
+    z-index: 2;
+}
+.layanan-container {
+  display: flex;
+  padding-top: 20px;
+    margin-top: 20px;
+  justify-content: space-between; 
+  align-items: center; 
+  flex-wrap: nowrap; 
+
+}
+
+.info-promo{
+  display: flex;
+  padding-top: 20px;
+  justify-content: space-between; 
+  align-items: center; 
+  flex-wrap: nowrap; 
+
+}
+
+.orange {
+    width: 100%;
+    background-image: url('/img/background-orange.png');
+    background-size: 100%;
+    position: relative;
+    z-index: 3;
+}
+</style>
