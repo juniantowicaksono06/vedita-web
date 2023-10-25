@@ -1,7 +1,5 @@
 <template>
-    <div class="container py-1 px-0 mb-5" ref="mainContainer">
-        <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
+    <div class="container py-1 px-0 mb-5" :class="{'max-w-100 pr-3 pl-3': VEDITA_STATUS != constant.VEDITA_STATUS_IDLE, 'welcome-screen': VEDITA_STATUS == constant.VEDITA_STATUS_IDLE}" ref="mainContainer">
         <!-- WELCOME SCREEN -->
         <div class="h-100" v-if="VEDITA_STATUS == constant.VEDITA_STATUS_IDLE">
             <div class="position-relative h-100">
@@ -235,15 +233,12 @@
         },
         watch: {
             VEDITA_STATUS(newValue, oldValue) {
-                this.$refs.mainContainer.classList.remove('welcome-screen')
+                // this.$refs.mainContainer.classList.remove('welcome-screen')
                 if(newValue == constant.VEDITA_STATUS_CATEGORY || newValue == constant.VEDITA_STATUS_SUB_CATEGORY) {
                     document.querySelector('body').classList.add('height-auto')
                 }
                 else {
                     document.querySelector('body').classList.remove('height-auto')
-                }
-                if(newValue == constant.VEDITA_STATUS_IDLE) {
-                    this.$refs.mainContainer.classList.add('welcome-screen')
                 }
                 setTimeout(() => {
                     if(newValue == constant.VEDITA_STATUS_IDLE) return
@@ -258,7 +253,7 @@
         },
         methods: {
             showPromo(id) {
-                this.PROMO_URL = `https://10.37.190.192/vedita-show-web?promo_id=${id}`
+                this.PROMO_URL = `${process.env.VEDITA_API_URL}/vedita-show-web?promo_id=${id}`
                 this.promoOpenModal()
             },
             prevSubCategory() {
@@ -309,6 +304,7 @@
                     if(response['status_code'] == 200) {
                         const {data} = response
                         this.LIST_SUB_CATEGORY = data['sub_category']
+                        this.SUB_CATEGORY_INDEX = 0
                         this.VEDITA_STATUS = this.constant.VEDITA_STATUS_SUB_CATEGORY
                         this.TOTAL_SUB_CATEGORY_PAGE = Math.ceil(this.LIST_SUB_CATEGORY.length / 6)
                         this.SHOWN_LIST_SUB_CATEGORY = this.LIST_SUB_CATEGORY.slice(0, this.SUB_CATEGORY_PER_PAGE)
@@ -370,7 +366,7 @@
                     })
                     const headers = {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer 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`
+                        'Authorization': `Bearer ${process.env.OPENAI_TOKEN}`
                     }
                     fetch("https://api.openai.com/v1/chat/completions", {
                         method: 'POST',

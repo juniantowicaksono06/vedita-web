@@ -8,7 +8,8 @@ export default {
     },
     env: {
         VEDITA_API_URL: process.env.VEDITA_API_URL,
-        ACCESS_TOKEN: process.env.ACCESS_TOKEN
+        ACCESS_TOKEN: process.env.ACCESS_TOKEN,
+        OPENAI_TOKEN: process.env.OPENAI_TOKEN
     },
     head: {
         title: 'Vedita - LiVe Digital Assistance',
@@ -26,9 +27,13 @@ export default {
         ],
         script: [
             {
-                src: 'js/record.js', async: true, defer: true,
-                src: 'js/bootstrap.bundle.min.js', async: true, defer: true,
-                src: 'js/jquery.slim.min.js', async: true, defer: true
+                src: 'js/record.js', async: true,
+            },
+            {
+                src: 'js/bootstrap.bundle.min.js', async: true,
+            },
+            {
+                src: 'js/jquery.slim.min.js', async: true
             }
         ]
     },
